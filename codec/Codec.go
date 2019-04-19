@@ -8,7 +8,7 @@ import (
 
 type ICodec interface {
 	Encode(data interface{}) interface{}
-	Decode(data interface{}) interface{}
+	Decode(datum []byte) interface{}
 	GetType() CodecType
 }
 
@@ -24,7 +24,7 @@ var manager codecManager
 const (
 	CodecText CodecType = iota
 	CodecJson
-	CodecBianry
+	CodecBinary
 	CodecProto
 	CodecSproto
 )
@@ -43,8 +43,7 @@ func InitCodec() error {
 	return nil
 }
 
-func RegisterCodec(codec ICodec) error {
-	ctype := codec.GetType()
+func RegisterCodec(ctype CodecType, codec ICodec) error {
 	if manager.codecMap[ctype] != nil {
 		return errors.New(fmt.Sprintf("Illegal Codec Type:%d", ctype))
 	}

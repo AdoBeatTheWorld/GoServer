@@ -11,7 +11,7 @@ func (jc *jsonCodec) Encode(data interface{}) interface{} {
 	return nil
 }
 
-func (jc *jsonCodec) Decode(data interface{}) interface{} {
+func (jc *jsonCodec) Decode(datum []byte) interface{} {
 	return nil
 }
 

@@ -29,6 +29,10 @@ func (tc *tcpConnector) Start() error {
 	return nil
 }
 
+func (tc *tcpConnector) Stop() {
+	//todo
+}
+
 func run(listener net.Listener) {
 	for {
 		conn, err := listener.Accept()

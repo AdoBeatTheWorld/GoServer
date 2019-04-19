@@ -11,7 +11,7 @@ func (tc *textCodec) Encode(data interface{}) interface{} {
 	return nil
 }
 
-func (tc *textCodec) Decode(data interface{}) interface{} {
+func (tc *textCodec) Decode(datum []byte) interface{} {
 	return nil
 }
 
