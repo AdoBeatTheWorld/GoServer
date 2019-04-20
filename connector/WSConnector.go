@@ -3,6 +3,7 @@ package connector
 import (
 	"bytes"
 	"github.com/gorilla/websocket"
+	"gitlab.com/adoontheway/goserver/codec"
 	"log"
 	"net/http"
 	"time"
@@ -13,7 +14,7 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize:  1024,
 	HandshakeTimeout: time.Duration(3) * time.Second,
 	CheckOrigin: func(r *http.Request) bool {
-		return true
+		return true //FIXME : remove after test
 	},
 }
 
@@ -27,8 +28,13 @@ var (
 	space   = []byte{' '}
 )
 
+var buf []byte
+
 type wsConnector struct {
-	addr string
+	addr     string
+	codec    codec.ICodec
+	readBuf  []byte
+	writeBuf []byte
 }
 
 func NewWsconnector(addr string) IConnector {
@@ -59,14 +65,18 @@ func startReadLoop(conn *websocket.Conn) {
 	conn.SetReadDeadline(time.Now().Add(pongWait))
 	//conn.PongHandler(func(string) error {conn.SetReadDeadline(time.Now().Add(pongWait));	return nil})
 	for {
-		_, message, err := conn.ReadMessage()
+		messageType, message, err := conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error:%v", err)
 			}
 			break
 		}
+		if err = conn.WriteMessage(websocket.BinaryMessage, buf); err != nil {
+
+		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		log.Printf("Message Type:%d", messageType)
 		log.Printf("Recieved message:%s", message)
 	}
 }
@@ -85,4 +95,8 @@ func (wc *wsConnector) Start() error {
 
 func (wc *wsConnector) Stop() {
 	//todo
+}
+
+func (wc *wsConnector) SetCodec(codec codec.ICodec) {
+	wc.codec = codec
 }

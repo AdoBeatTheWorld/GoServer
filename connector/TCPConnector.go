@@ -2,14 +2,16 @@ package connector
 
 import (
 	"github.com/astaxie/beego/logs"
+	"gitlab.com/adoontheway/goserver/codec"
 	"log"
 	"net"
 )
 
 type tcpConnector struct {
 	Addr     string
-	readbuf  [1024]byte
-	writebuf [1024]byte
+	readbuf  []byte
+	writebuf []byte
+	codec    codec.ICodec
 }
 
 func NewTcpConnector(addr string) IConnector {
@@ -27,6 +29,11 @@ func (tc *tcpConnector) Start() error {
 	go run(listener)
 
 	return nil
+}
+
+func (tc *tcpConnector) SetCodec(codec codec.ICodec) {
+	//todo
+	tc.codec = codec
 }
 
 func (tc *tcpConnector) Stop() {
