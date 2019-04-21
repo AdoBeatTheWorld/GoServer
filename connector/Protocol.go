@@ -2,7 +2,14 @@ package connector
 
 import (
 	"github.com/golang/protobuf/proto"
+	"github.com/pkg/errors"
 	"reflect"
+)
+
+const (
+	Msg_Main  = 1
+	Msg_Logic = 2
+	Msg_Game  = 3
 )
 
 type Header struct {
@@ -33,4 +40,17 @@ func RegisterProtocol(msgid uint16, msg interface{}, handler MessageHandler) {
 	info.msgType = reflect.TypeOf(msg.(proto.Message))
 	info.msgHandler = handler
 	msg_map[msgid] = info
+}
+
+func HandleRawData(msgid uint16, data []byte) error {
+	if info, ok := msg_map[msgid]; ok {
+		msg := reflect.New(info.msgType.Elem()).Interface()
+		err := proto.Unmarshal(data, msg.(proto.Message))
+		if err != nil {
+			return err
+		}
+		info.msgHandler(msgid, msg)
+		return err
+	}
+	return errors.Errorf("msgid not found:%d", msgid)
 }

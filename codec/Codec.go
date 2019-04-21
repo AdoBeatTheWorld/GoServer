@@ -7,8 +7,8 @@ import (
 )
 
 type ICodec interface {
-	Encode(data interface{}) interface{}
-	Decode(datum []byte) interface{}
+	Encode(data interface{}) (interface{}, error)
+	Decode(datum interface{}) interface{}
 	GetType() CodecType
 }
 
