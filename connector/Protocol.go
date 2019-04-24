@@ -54,3 +54,7 @@ func HandleRawData(msgid uint16, data []byte) error {
 	}
 	return errors.Errorf("msgid not found:%d", msgid)
 }
+
+func ReadHeader(datume []byte) {
+	header := &Header{}
+}

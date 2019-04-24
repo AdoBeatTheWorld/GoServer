@@ -1,0 +1,17 @@
+syntax = "proto3";
+package hello;
+
+message Hello
+{
+    string content = 1;
+}
+
+message Greeting
+{
+    string content = 1;
+}
+
+message List
+{
+    repeated string users = 1;
+}
