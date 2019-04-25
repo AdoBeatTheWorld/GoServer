@@ -14,6 +14,18 @@ graph TD;
 
 ## Message
 
+### Http
+1. login result
+```proto
+type LoginResult struct {
+	Uid        string `json:"uid"`
+	Score      int64  `json:"score"`
+	Account    string `json:"account"`
+	GameServer string `json:"game_server"`
+}
+```
+
+
 ### Header
 | reserved | reserved |
 | :--------: | :--------: |
