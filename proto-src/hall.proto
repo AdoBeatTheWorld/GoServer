@@ -1,0 +1,11 @@
+syntax = "proto3";
+package hall;
+
+message Login {
+    string token = 1;
+}
+
+message LoginResult {
+    string account = 1;
+    int32 userid = 2;
+}

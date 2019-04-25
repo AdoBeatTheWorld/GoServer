@@ -100,3 +100,7 @@ func (wc *wsConnector) Stop() {
 func (wc *wsConnector) SetCodec(codec codec.ICodec) {
 	wc.codec = codec
 }
+
+func (wc *wsConnector) AddHandler(name string, handler HandleFunc) {
+	//todo
+}
