@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ForDREAM</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+       body { font: 13px Helvetica, Arial; }
+    </style>
+
+    <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+       function sendLogin() {
+           account = $("#account").val();
+           if(account.length == 0){
+               alert("你要干嘛？！！")
+               return
+           }
+           console.log("Account:",account)
+            $.post("login",{account:account},function (result) {
+                console.log("login result:",result)
+            })
+       }
+    </script>
+</head>
+<body>
+
+<h1>Welcome...</h1>
+<div >
+    Account:<input type="text" id="account" name="account" ><br>
+    <input type="submit" onclick="sendLogin();">
+</div>
+
+</body>
+</html>
