@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ForDREAM</title>
+    <title>ForDream</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
        body { font: 13px Helvetica, Arial; }
@@ -10,15 +10,21 @@
 
     <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
     <script>
-       function sendLogin() {
+       var ws;
+        function sendLogin() {
            account = $("#account").val();
            if(account.length == 0){
                alert("你要干嘛？！！")
                return
            }
            console.log("Account:",account)
-            $.post("login",{account:account},function (result) {
-                console.log("login result:",result)
+            $.post("login/"+account,function (result) {
+                console.log("session:",result)
+                ws = new WebSocket("ws://127.0.0.1:8080/ws");
+                ws.onopen=function(a,b){
+                    ws.send(JSON.stringify({session:result}))
+                }
+
             })
        }
     </script>

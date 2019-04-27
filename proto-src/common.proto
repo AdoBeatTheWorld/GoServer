@@ -1,0 +1,26 @@
+syntax = "proto3";
+package common;
+
+message Login {
+    string Session = 1;
+}
+
+message User {
+    string Name = 1;
+    int32 UserId = 2;
+    int64 Score = 3;
+    string Head = 4;
+}
+
+message Enter {
+    int32 RoomId = 1;
+}
+
+message UserList {
+    repeated User users = 1;
+}
+
+message RoomInfo {
+    int32 RoomId = 1;
+    string Name = 2;
+}
