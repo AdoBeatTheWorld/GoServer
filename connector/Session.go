@@ -20,28 +20,19 @@ type session struct {
 	conn   net.Conn
 }
 
-type sessionManager struct {
+type SessionManager struct {
 	sessionMap map[uint64]ISession
 }
 
-var manager sessionManager
-
 var flag int32 = 0
 
-func Start() error {
-	manager = sessionManager{
-		sessionMap: make(map[uint64]ISession),
-	}
-	return nil
-}
-
-func NewSession(id uint64, userid uint64, conn net.Conn) (ISession, error) {
+func (sm *SessionManager) NewSession(id uint64, userid uint64, conn net.Conn) (ISession, error) {
 	s := &session{
 		ID:     id,
 		UserId: userid,
 		conn:   conn,
 	}
-	manager.sessionMap[id] = s
+	sm.sessionMap[id] = s
 	return s, nil
 }
 

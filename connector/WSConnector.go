@@ -31,27 +31,33 @@ var (
 var buf []byte
 
 type wsConnector struct {
-	addr     string
-	codec    codec.ICodec
-	readBuf  []byte
-	writeBuf []byte
+	addr       string
+	codec      codec.ICodec
+	readBuf    []byte
+	writeBuf   []byte
+	sessionMgr *SessionManager
 }
 
 func NewWsconnector(addr string) IConnector {
 	return &wsConnector{
 		addr: addr,
+		sessionMgr:&SessionManager{
+			sessionMap:make(map[uint64]ISession),
+		},
 	}
 }
 
-func serveWS(w http.ResponseWriter, r *http.Request) {
+func (wc *wsConnector) serveWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
 		log.Fatalf("Ws serve errror:%s", err)
 		return
 	}
+
 	//todo init session or not, need receive login protocol
 	//todo add channel to sub&pub&broadcast
+	//sess := wc.sessionMgr.NewSession()
 	go startReadLoop(conn)
 	go startWriteLoop(conn)
 }
