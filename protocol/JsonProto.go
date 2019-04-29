@@ -1,4 +1,4 @@
-package proto
+package protocol
 
 type LoginResult struct {
 	Uid        string `json:"uid"`
@@ -8,6 +8,6 @@ type LoginResult struct {
 }
 
 type HttpLogin struct {
-	Session string `json:"session"`
+	Session    string `json:"session"`
 	GateServer string `json:"gate"`
-} 
+}

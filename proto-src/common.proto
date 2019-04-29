@@ -1,5 +1,5 @@
 syntax = "proto3";
-package common;
+package protocol;
 
 message Login {
     string Session = 1;
