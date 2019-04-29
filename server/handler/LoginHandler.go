@@ -6,6 +6,6 @@ import (
 )
 
 func LoginHandler(msg proto.Message) (result interface{}, err error) {
-	log.Printf("LoginHandler:%x", msg.String())
+	log.Printf("LoginHandler:%x", msg)
 	return nil, nil
 }

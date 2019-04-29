@@ -61,12 +61,13 @@ func (c *Client) startReadLoop() {
 		}
 		header := &Header{}
 		reader := bytes.NewReader(data)
-		binary.Read(reader, binary.LittleEndian, &header)
-		//binary.Read(reader, binary.LittleEndian, &header.Len)
-		//binary.Read(reader, binary.LittleEndian, &header.MainId)
-		//binary.Read(reader, binary.LittleEndian, &header.SubId)
-		//binary.Read(reader, binary.LittleEndian, &header.EncryType)
-		//binary.Read(reader, binary.LittleEndian, &header.data)
+		//binary.Read(reader, binary.LittleEndian, &header)
+		binary.Read(reader, binary.LittleEndian, &header.Len)
+		header.data = make([]byte, header.Len-5)
+		binary.Read(reader, binary.LittleEndian, &header.MainId)
+		binary.Read(reader, binary.LittleEndian, &header.SubId)
+		binary.Read(reader, binary.LittleEndian, &header.EncryType)
+		binary.Read(reader, binary.LittleEndian, &header.data)
 
 		ProtoMgr.Handle(header.MainId, header.SubId, header.data, c)
 	}
