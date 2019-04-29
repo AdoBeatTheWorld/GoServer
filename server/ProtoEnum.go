@@ -1,4 +1,4 @@
-package main
+package server
 
 //main id
 const (

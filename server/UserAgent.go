@@ -55,22 +55,20 @@ func (c *Client) startReadLoop() {
 		_, data, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Print("error:%v", err)
+				log.Printf("error:%v", err)
 			}
 			break
 		}
 		header := &Header{}
 		reader := bytes.NewReader(data)
-		binary.Read(reader, binary.LittleEndian, &header.Len)
-		binary.Read(reader, binary.LittleEndian, &header.MainId)
-		binary.Read(reader, binary.LittleEndian, &header.SubId)
-		binary.Read(reader, binary.LittleEndian, &header.EncryType)
-		binary.Read(reader, binary.LittleEndian, &header.data)
+		binary.Read(reader, binary.LittleEndian, &header)
+		//binary.Read(reader, binary.LittleEndian, &header.Len)
+		//binary.Read(reader, binary.LittleEndian, &header.MainId)
+		//binary.Read(reader, binary.LittleEndian, &header.SubId)
+		//binary.Read(reader, binary.LittleEndian, &header.EncryType)
+		//binary.Read(reader, binary.LittleEndian, &header.data)
 
-		//err = proto.Unmarshal(data, &msg)
-		//if err != nil {
-		//	log.Fatalln("Proto Unmarshal err:",err)
-		//}
+		ProtoMgr.Handle(header.MainId, header.SubId, header.data, c)
 	}
 }
 
