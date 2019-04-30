@@ -29,7 +29,7 @@ func TestConnection(t *testing.T) {
 		log.Fatalln(err)
 	}
 	login := &protocol.Login{
-		Session: "test proto",
+		Session: "Incrediable Hulk.",
 	}
 
 	data, err := proto.Marshal(login)

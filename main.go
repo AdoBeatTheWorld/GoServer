@@ -10,10 +10,34 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"time"
 )
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+}
+
+func startLog() {
+	logname := time.Now().Format("20060102150405")
+	f, err := os.OpenFile("./log/"+logname+".log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+	nowTime := time.Now().AddDate(0, 0, 1)
+	timeStr := nowTime.Format("2006-01-02") + " 03:00"
+	t, _ := time.ParseInLocation("2006-01-01 01:01:01", timeStr, time.Local)
+	a := t.Sub(time.Now())
+	time.AfterFunc(a, func() {
+		f.Close()
+		logname := time.Now().Format("20060102150405")
+		f, err = os.OpenFile("./log/"+logname+".log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalf("error opening file: %v", err)
+		}
+		defer f.Close()
+	})
 }
 
 var addr = flag.String("add", ":8080", "http service address")
@@ -28,12 +52,8 @@ var upgrader = websocket.Upgrader{
 
 func main() {
 	flag.Parse()
-	f, err := os.OpenFile("./log/hehe.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer f.Close()
-	log.SetOutput(f)
+
+	startLog()
 
 	s := server.NewServer(100)
 
@@ -46,7 +66,7 @@ func main() {
 		ServeWS(s, w, r, p)
 	})
 
-	err = http.ListenAndServe(*addr, router)
+	err := http.ListenAndServe(*addr, router)
 	checkErr(err)
 	log.Printf("Http is listening on:%s", *addr)
 }
