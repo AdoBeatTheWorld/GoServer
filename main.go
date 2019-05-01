@@ -17,10 +17,9 @@ var addr = flag.String("add", ":8080", "http service address")
 
 func main() {
 	flag.Parse()
-
 	server.StartLog()
 
-	s := server.NewServer(100)
+	s := server.NewServer()
 
 	router := httprouter.New()
 	router.GET("/", server.Index)

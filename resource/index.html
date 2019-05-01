@@ -23,8 +23,13 @@
                 ws = new WebSocket("ws://127.0.0.1:8080/ws");
                 ws.onopen=function(a,b){
                     ws.send(JSON.stringify({session:result}))
-                }
-
+                };
+                ws.onclose = function (evt) {
+                    console.log("ws was closed")
+                };
+                ws.onmessage = function (evt) {
+                    console.log("ws received message")
+                };
             })
        }
     </script>

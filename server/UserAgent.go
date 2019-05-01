@@ -59,20 +59,33 @@ func (c *Client) startReadLoop() {
 			}
 			break
 		}
-		header := &Header{}
 		reader := bytes.NewReader(data)
-		//binary.Read(reader, binary.LittleEndian, &header)
+		//check legal
+
+		//parse
+		header := &Header{}
 		binary.Read(reader, binary.LittleEndian, &header.Len)
-		header.data = make([]byte, header.Len-5)
+		if int(header.Len) > len(data) {
+			log.Println("Illegal packet.")
+			c.Stop()
+			return
+		}
 		binary.Read(reader, binary.LittleEndian, &header.MainId)
 		binary.Read(reader, binary.LittleEndian, &header.SubId)
 		binary.Read(reader, binary.LittleEndian, &header.EncryType)
 		binary.Read(reader, binary.LittleEndian, &header.data)
-
 		ProtoMgr.Handle(header.MainId, header.SubId, header.data, c)
 	}
 }
 
 func (c *Client) startWriteLoop() {
 
+}
+
+func (c *Client) Stop() {
+	c.s.RemoveClient(c)
+	err := c.conn.Close()
+	if err != nil {
+		log.Printf("Close client error:%s", err)
+	}
 }

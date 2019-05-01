@@ -52,8 +52,8 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func Login(s *Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	account := ps.ByName("account")
 	session := s.GenSession(account)
-	_, err := fmt.Fprint(w, session)
-	//log.Printf("Login Session:%s, bytes:%d", session, n)
+	n, err := fmt.Fprint(w, session)
+	log.Printf("Login Session:%s, bytes:%d", session, n)
 	if err != nil {
 		log.Fatalf("Login error:%s \n", err)
 	}
