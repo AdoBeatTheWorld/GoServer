@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
 	"log"
@@ -30,12 +31,45 @@ type Client struct {
 	uid     uuid.UUID
 	session string
 	rw      bufio.ReadWriter
-	s       *Server
+	s       *WSServer
 }
 
 func (c *Client) Start() {
-	go c.startWriteLoop()
+	//go c.startWriteLoop()
 	go c.startReadLoop()
+}
+
+func (c *Client) Send(mainId uint8, subId uint8, message proto.Message) {
+	buf, err := proto.Marshal(message)
+	if err != nil {
+		log.Fatalln("proto marshall error:", err)
+	}
+	len := len(buf) + 5
+	dataBuf := bytes.NewBuffer([]byte{})
+	err = binary.Write(dataBuf, binary.LittleEndian, len)
+	if err != nil {
+		log.Println("Error occurred when write stream:", err)
+	}
+	err = binary.Write(dataBuf, binary.LittleEndian, mainId)
+	if err != nil {
+		log.Println("Error occurred when write stream:", err)
+	}
+	err = binary.Write(dataBuf, binary.LittleEndian, subId)
+	if err != nil {
+		log.Println("Error occurred when write stream:", err)
+	}
+	err = binary.Write(dataBuf, binary.LittleEndian, 0)
+	if err != nil {
+		log.Println("Error occurred when write stream:", err)
+	}
+	err = binary.Write(dataBuf, binary.LittleEndian, buf)
+	if err != nil {
+		log.Println("Error occurred when write stream:", err)
+	}
+	err = c.conn.WriteMessage(websocket.BinaryMessage, dataBuf.Bytes())
+	if err != nil {
+		log.Println("Error occurred when write stream:", err)
+	}
 }
 
 func (c *Client) startReadLoop() {
@@ -64,16 +98,16 @@ func (c *Client) startReadLoop() {
 
 		//parse
 		header := &Header{}
-		binary.Read(reader, binary.LittleEndian, &header.Len)
+		err = binary.Read(reader, binary.LittleEndian, &header.Len)
 		if int(header.Len) > len(data) {
 			log.Println("Illegal packet.")
 			c.Stop()
 			return
 		}
-		binary.Read(reader, binary.LittleEndian, &header.MainId)
-		binary.Read(reader, binary.LittleEndian, &header.SubId)
-		binary.Read(reader, binary.LittleEndian, &header.EncryType)
-		binary.Read(reader, binary.LittleEndian, &header.data)
+		err = binary.Read(reader, binary.LittleEndian, &header.MainId)
+		err = binary.Read(reader, binary.LittleEndian, &header.SubId)
+		err = binary.Read(reader, binary.LittleEndian, &header.EncryType)
+		err = binary.Read(reader, binary.LittleEndian, &header.data)
 		ProtoMgr.Handle(header.MainId, header.SubId, header.data, c)
 	}
 }

@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var f os.File
+
 func StartLog() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	logname := time.Now().Format("20060102150405")
@@ -28,4 +30,8 @@ func StartLog() {
 	//	}
 	//	defer f.Close()
 	//})
+}
+
+func CloseLog() {
+	f.Close()
 }
