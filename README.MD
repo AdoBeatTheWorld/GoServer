@@ -1,5 +1,10 @@
 # Build Golang Game Server From Scratch
 
+
+## Next Step
+1. 用于测试协议的简单前端
+2. Redis连接已经实现了
+
 ## Structure
 ```mermaid
 graph TD;
@@ -16,7 +21,7 @@ graph TD;
 
 ### Http
 1. login result
-```proto
+```go
 type LoginResult struct {
 	Uid        string `json:"uid"`
 	Score      int64  `json:"score"`
