@@ -11,12 +11,13 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
-var addr = flag.String("add", ":8080", "http service address")
+var addr = flag.String("addr", ":8080", "http service address")
 
 func main() {
 	flag.Parse()
 
 	server.StartLog()
+	//server.SendRedis()
 
 	s := server.NewServer(*addr)
 	err := s.Start()

@@ -9,6 +9,7 @@
     </style>
 
     <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script>
        var ws;
         function sendLogin() {
@@ -20,6 +21,17 @@
            console.log("Account:",account)
             $.post("login/"+account,function (result) {
                 console.log("session:",result)
+                const socket = io("http://localhost:8080/ws")
+                socket.on('connect',function () {
+                    console.log('connect')
+                })
+                socket.on('event',function (data) {
+                    console.log(data)
+                })
+                socket.on('disconnect',function () {
+                    console.log('disconnect')
+                })
+                /**
                 ws = new WebSocket("ws://127.0.0.1:8080/ws");
                 ws.onopen=function(a,b){
                     ws.send(JSON.stringify({session:result}))
@@ -30,6 +42,7 @@
                 ws.onmessage = function (evt) {
                     console.log("ws received message")
                 };
+                 */
             })
        }
     </script>
